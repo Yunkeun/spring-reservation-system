@@ -21,7 +21,7 @@ spring boot CRUD REST API example with JPA, MySQL, Gradle
     - id
     - firstName
     - lastName
-    - status (active/deactive)
+    - status (active/inactive)
   - Lend
     - id
     - startOn
