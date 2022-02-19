@@ -1,10 +1,16 @@
 package com.yoonveloping.reservationsystem.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -16,6 +22,11 @@ public class Member {
 	private Long Id;
 	private String firstName;
 	private String lastName;
-	@Enumerated
+
+	@Enumerated(EnumType.STRING)
 	private MemberStatus status;
+
+	@JsonBackReference
+	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private List<Lend> lends;
 }
