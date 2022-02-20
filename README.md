@@ -36,6 +36,7 @@ spring boot CRUD REST API example with JPA, MySQL, Gradle
   - 하나의 회원은 여러 책을 대출할 수 있다.
 - 서비스
   - id로 책을 조회한다.
+  - isbn으로 책을 조회한다.
   - id로 책을 삭제한다.
   - 저장된 모든 책을 조회한다.
   - 책을 생성한다.
