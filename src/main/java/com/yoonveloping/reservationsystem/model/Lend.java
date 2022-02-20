@@ -34,4 +34,52 @@ public class Lend {
 	@JoinColumn(name = "member_id")
 	@JsonManagedReference
 	private Member member;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public Instant getStartOn() {
+		return startOn;
+	}
+
+	public void setStartOn(Instant startOn) {
+		this.startOn = startOn;
+	}
+
+	public Instant getDueOn() {
+		return dueOn;
+	}
+
+	public void setDueOn(Instant dueOn) {
+		this.dueOn = dueOn;
+	}
+
+	public LendStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(LendStatus status) {
+		this.status = status;
+	}
+
+	public Book getBook() {
+		return book;
+	}
+
+	public void setBook(Book book) {
+		this.book = book;
+	}
+
+	public Member getMember() {
+		return member;
+	}
+
+	public void setMember(Member member) {
+		this.member = member;
+	}
 }

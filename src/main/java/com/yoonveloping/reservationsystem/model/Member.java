@@ -29,4 +29,44 @@ public class Member {
 	@JsonBackReference
 	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Lend> lends;
+
+	public Long getId() {
+		return Id;
+	}
+
+	public void setId(Long id) {
+		Id = id;
+	}
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public MemberStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(MemberStatus status) {
+		this.status = status;
+	}
+
+	public List<Lend> getLends() {
+		return lends;
+	}
+
+	public void setLends(List<Lend> lends) {
+		this.lends = lends;
+	}
 }
