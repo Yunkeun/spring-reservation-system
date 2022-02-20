@@ -1,45 +1,31 @@
 package com.yoonveloping.reservationsystem.service;
 
+import com.yoonveloping.reservationsystem.model.Author;
 import com.yoonveloping.reservationsystem.model.Book;
-import com.yoonveloping.reservationsystem.repository.BookRepository;
+import com.yoonveloping.reservationsystem.model.Member;
+import com.yoonveloping.reservationsystem.model.request.AuthorCreationRequest;
+import com.yoonveloping.reservationsystem.model.request.BookCreationRequest;
+import com.yoonveloping.reservationsystem.model.request.BookLendRequest;
+import com.yoonveloping.reservationsystem.model.request.MemberCreationRequest;
 import java.util.List;
-import java.util.Optional;
-import javax.persistence.EntityNotFoundException;
-import org.springframework.stereotype.Service;
 
-@Service
-public class LibraryService {
+public interface LibraryService {
 
-	public static final String ENTITY_NOT_FOUND_BY_ID_MESSAGE = "Cannot find any book under given ID!";
-	public static final String ENTITY_NOT_FOUND_BY_ISBN_MESSAGE = "Cannot find any book under given ISBN!";
+	Book findBookById(Long id);
 
-	private final BookRepository bookRepository;
+	Book findBookByIsbn(String isbn);
 
-	public LibraryService(BookRepository bookRepository) {
-		this.bookRepository = bookRepository;
-	}
+	List<Book> findAllBooks();
 
-	public Book findBookById(Long id) {
-		final Optional<Book> book = bookRepository.findById(id);
-		if (book.isPresent()) {
-			return book.get();
-		}
-		throw new EntityNotFoundException(ENTITY_NOT_FOUND_BY_ID_MESSAGE);
-	}
+	void deleteBookById(Long id);
 
-	public Book findBookByIsbn(String isbn) {
-		final Optional<Book> book = bookRepository.findByIsbn(isbn);
-		if (book.isPresent()) {
-			return book.get();
-		}
-		throw new EntityNotFoundException(ENTITY_NOT_FOUND_BY_ISBN_MESSAGE);
-	}
+	Book createBook(BookCreationRequest request);
 
-	public List<Book> findAllBooks() {
-		return bookRepository.findAll();
-	}
+	Member createMember(MemberCreationRequest request);
 
-	public void deleteBookById(Long id) {
-		bookRepository.deleteById(id);
-	}
+	Member updateMember(Long id, MemberCreationRequest request);
+
+	Author createAuthor(AuthorCreationRequest request);
+
+	List<String> lendBook(List<BookLendRequest> requests);
 }

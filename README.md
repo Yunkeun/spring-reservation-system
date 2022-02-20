@@ -41,5 +41,6 @@ spring boot CRUD REST API example with JPA, MySQL, Gradle
   - 저장된 모든 책을 조회한다.
   - 책을 생성한다.
   - 회원을 생성한다.
+  - 회원 정보를 업데이트한다.
   - 저자를 생성한다.
   - 도서를 대출한다.

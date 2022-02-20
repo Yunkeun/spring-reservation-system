@@ -1,5 +1,7 @@
 package com.yoonveloping.reservationsystem.model.request;
 
+import com.yoonveloping.reservationsystem.model.Member;
+
 public class MemberCreationRequest {
 
 	private String firstName;
@@ -24,5 +26,11 @@ public class MemberCreationRequest {
 
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
+	}
+
+	public Member updateMemberName(Member member) {
+		member.setLastName(lastName);
+		member.setFirstName(firstName);
+		return member;
 	}
 }
