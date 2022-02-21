@@ -27,6 +27,8 @@ public interface LibraryService {
 
 	Member updateMember(Long id, MemberCreationRequest request);
 
+	void deleteMemberById(Long id);
+
 	Author createAuthor(AuthorCreationRequest request);
 
 	List<String> lendBook(BookLendRequest request);

@@ -9,7 +9,6 @@ import com.yoonveloping.reservationsystem.model.request.BookLendRequest;
 import com.yoonveloping.reservationsystem.model.request.MemberCreationRequest;
 import com.yoonveloping.reservationsystem.service.LibraryService;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,17 +23,21 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/api/library")
-@RequiredArgsConstructor
 @CrossOrigin("*")
 public class LibraryController {
 
 	private final LibraryService libraryService;
+
+	public LibraryController(LibraryService libraryService) {
+		this.libraryService = libraryService;
+	}
 
 	@GetMapping("/book")
 	public ResponseEntity readBooks(@RequestParam(required = false) String isbn) {
 		if (isbn == null) {
 			return ResponseEntity.ok(libraryService.findAllBooks());
 		}
+		System.out.println("libraryService = " + libraryService.findAllBooks());
 		return ResponseEntity.ok(libraryService.findBookByIsbn(isbn));
 	}
 
@@ -55,9 +58,10 @@ public class LibraryController {
 	}
 
 	@PostMapping("/author")
-	public ResponseEntity<Author> createAuthor(
-		@RequestBody AuthorCreationRequest authorCreationRequest) {
-		return ResponseEntity.ok(libraryService.createAuthor(authorCreationRequest));
+	public ResponseEntity<Author> createAuthor(@RequestBody AuthorCreationRequest authorCreationRequest) {
+		Author author = libraryService.createAuthor(authorCreationRequest);
+		System.out.println(author.toString());
+		return ResponseEntity.ok(author);
 	}
 
 	@PostMapping("/member")
@@ -69,6 +73,12 @@ public class LibraryController {
 	public ResponseEntity<Member> updateMember(@RequestBody MemberCreationRequest request,
 		@PathVariable Long memberId) {
 		return ResponseEntity.ok(libraryService.updateMember(memberId, request));
+	}
+
+	@DeleteMapping("member/{memberId}")
+	public ResponseEntity<Void> deleteMember(@PathVariable Long memberId) {
+		libraryService.deleteMemberById(memberId);
+		return ResponseEntity.ok().build();
 	}
 
 	@PostMapping("/book/lend")

@@ -83,7 +83,7 @@ public class LibraryServiceImpl implements LibraryService {
 			throw new EntityNotFoundException(AUTHOR_NOT_FOUND_MESSAGE);
 		}
 		final Book book = new Book();
-		BeanUtils.copyProperties(book, request);
+		BeanUtils.copyProperties(request, book);
 		book.setAuthor(author.get());
 		return bookRepository.save(book);
 	}
@@ -91,7 +91,8 @@ public class LibraryServiceImpl implements LibraryService {
 	@Override
 	public Member createMember(MemberCreationRequest request) {
 		final Member member = new Member();
-		BeanUtils.copyProperties(member, request);
+		BeanUtils.copyProperties(request, member);
+		member.setStatus(MemberStatus.ACTIVE);
 		return memberRepository.save(member);
 	}
 
@@ -106,9 +107,14 @@ public class LibraryServiceImpl implements LibraryService {
 	}
 
 	@Override
+	public void deleteMemberById(Long id) {
+		memberRepository.deleteById(id);
+	}
+
+	@Override
 	public Author createAuthor(AuthorCreationRequest request) {
 		final Author author = new Author();
-		BeanUtils.copyProperties(author, request);
+		BeanUtils.copyProperties(request, author);
 		return authorRepository.save(author);
 	}
 
@@ -125,8 +131,7 @@ public class LibraryServiceImpl implements LibraryService {
 	}
 
 	private Member findMember(BookLendRequest request) {
-		final Optional<Member> memberById = memberRepository.findById(
-			request.getMemberId());
+		final Optional<Member> memberById = memberRepository.findById(request.getMemberId());
 		if (memberById.isEmpty()) {
 			throw new EntityNotFoundException(MEMBER_NOT_FOUND_MESSAGE);
 		}
@@ -149,17 +154,14 @@ public class LibraryServiceImpl implements LibraryService {
 		return bookById.get();
 	}
 
-	private void saveLendInfo(List<String> booksApprovedToBurrow, Book bookForId,
-		Member memberForId) {
-		final Optional<Lend> burrowedBook = lendRepository.findByBookAndStatus(bookForId,
-			LendStatus.UNAVAILABLE);
+	private void saveLendInfo(List<String> booksApprovedToBurrow, Book bookForId, Member memberForId) {
+		final Optional<Lend> burrowedBook = lendRepository.findByBookAndStatus(bookForId, LendStatus.UNAVAILABLE);
 		if (burrowedBook.isEmpty()) {
 			lendRepository.save(setLendInfo(booksApprovedToBurrow, bookForId, memberForId));
 		}
 	}
 
-	private Lend setLendInfo(List<String> booksApprovedToBurrow, Book bookForId,
-		Member memberForId) {
+	private Lend setLendInfo(List<String> booksApprovedToBurrow, Book bookForId, Member memberForId) {
 		booksApprovedToBurrow.add(bookForId.getName());
 		final Lend lend = new Lend();
 		lend.setMember(memberForId);
