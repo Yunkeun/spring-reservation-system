@@ -2,6 +2,8 @@ package com.yoonveloping.reservationsystem.service;
 
 import com.yoonveloping.reservationsystem.model.Author;
 import com.yoonveloping.reservationsystem.model.Book;
+import com.yoonveloping.reservationsystem.model.Lend;
+import com.yoonveloping.reservationsystem.model.LendStatus;
 import com.yoonveloping.reservationsystem.model.Member;
 import com.yoonveloping.reservationsystem.model.MemberStatus;
 import com.yoonveloping.reservationsystem.model.request.AuthorCreationRequest;
@@ -12,6 +14,8 @@ import com.yoonveloping.reservationsystem.repository.AuthorRepository;
 import com.yoonveloping.reservationsystem.repository.BookRepository;
 import com.yoonveloping.reservationsystem.repository.LendRepository;
 import com.yoonveloping.reservationsystem.repository.MemberRepository;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -27,6 +31,7 @@ public class LibraryServiceImpl implements LibraryService {
 	private static final String AUTHOR_NOT_FOUND_MESSAGE = "Cannot find any author!";
 	private static final String MEMBER_NOT_FOUND_MESSAGE = "Cannot find the member in the database!";
 	private static final String MEMBER_NOT_ACTIVE_ERROR_MESSAGE = "Member is not active to proceed a lending!";
+	private static final int EXPIRATION_DAYS = 30;
 
 	private final BookRepository bookRepository;
 	private final AuthorRepository authorRepository;
@@ -108,21 +113,20 @@ public class LibraryServiceImpl implements LibraryService {
 	}
 
 	@Override
-	public List<String> lendBook(List<BookLendRequest> requests) {
-		return approveBooksToBurrow(requests);
+	public List<String> lendBook(BookLendRequest request) {
+		return approveBooksToBurrow(request);
 	}
 
-	private List<String> approveBooksToBurrow(List<BookLendRequest> requests) {
+	private List<String> approveBooksToBurrow(BookLendRequest request) {
 		final List<String> booksApprovedToBurrow = new ArrayList<>();
-		requests.forEach(bookLendRequest
-			-> bookLendRequest.saveLendInfo(lendRepository, booksApprovedToBurrow,
-			findBook(bookLendRequest), findMember(bookLendRequest)));
+		request.getBookIds().forEach(bookId
+			-> saveLendInfo(booksApprovedToBurrow, findBook(bookId), findMember(request)));
 		return booksApprovedToBurrow;
 	}
 
-	private Member findMember(BookLendRequest bookLendRequest) {
+	private Member findMember(BookLendRequest request) {
 		final Optional<Member> memberById = memberRepository.findById(
-			bookLendRequest.getMemberId());
+			request.getMemberId());
 		if (memberById.isEmpty()) {
 			throw new EntityNotFoundException(MEMBER_NOT_FOUND_MESSAGE);
 		}
@@ -137,11 +141,33 @@ public class LibraryServiceImpl implements LibraryService {
 		}
 	}
 
-	private Book findBook(BookLendRequest bookLendRequest) {
-		final Optional<Book> bookById = bookRepository.findById(bookLendRequest.getBookId());
+	private Book findBook(Long bookId) {
+		final Optional<Book> bookById = bookRepository.findById(bookId);
 		if (bookById.isEmpty()) {
 			throw new EntityNotFoundException(BOOK_NOT_FOUND_BY_ID_MESSAGE);
 		}
 		return bookById.get();
+	}
+
+
+	private void saveLendInfo(List<String> booksApprovedToBurrow, Book bookForId,
+		Member memberForId) {
+		final Optional<Lend> burrowedBook = lendRepository.findByBookAndStatus(bookForId,
+			LendStatus.UNAVAILABLE);
+		if (burrowedBook.isEmpty()) {
+			lendRepository.save(setLendInfo(booksApprovedToBurrow, bookForId, memberForId));
+		}
+	}
+
+	private Lend setLendInfo(List<String> booksApprovedToBurrow, Book bookForId,
+		Member memberForId) {
+		booksApprovedToBurrow.add(bookForId.getName());
+		final Lend lend = new Lend();
+		lend.setMember(memberForId);
+		lend.setBook(bookForId);
+		lend.setStatus(LendStatus.UNAVAILABLE);
+		lend.setStartOn(Instant.now());
+		lend.setDueOn(Instant.now().plus(EXPIRATION_DAYS, ChronoUnit.DAYS));
+		return lend;
 	}
 }

@@ -27,5 +27,5 @@ public interface LibraryService {
 
 	Author createAuthor(AuthorCreationRequest request);
 
-	List<String> lendBook(List<BookLendRequest> requests);
+	List<String> lendBook(BookLendRequest request);
 }
