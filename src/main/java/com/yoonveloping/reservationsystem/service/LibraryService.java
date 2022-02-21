@@ -8,7 +8,9 @@ import com.yoonveloping.reservationsystem.model.request.BookCreationRequest;
 import com.yoonveloping.reservationsystem.model.request.BookLendRequest;
 import com.yoonveloping.reservationsystem.model.request.MemberCreationRequest;
 import java.util.List;
+import org.springframework.stereotype.Service;
 
+@Service
 public interface LibraryService {
 
 	Book findBookById(Long id);

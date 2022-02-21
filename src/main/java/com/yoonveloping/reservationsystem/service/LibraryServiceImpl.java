@@ -149,7 +149,6 @@ public class LibraryServiceImpl implements LibraryService {
 		return bookById.get();
 	}
 
-
 	private void saveLendInfo(List<String> booksApprovedToBurrow, Book bookForId,
 		Member memberForId) {
 		final Optional<Lend> burrowedBook = lendRepository.findByBookAndStatus(bookForId,
