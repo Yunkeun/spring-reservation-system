@@ -32,17 +32,18 @@ public class LibraryController {
 		this.libraryService = libraryService;
 	}
 
+	@GetMapping("/book/all")
+	public ResponseEntity<List<Book>> searchAllBooks() {
+		return ResponseEntity.ok(libraryService.findAllBooks());
+	}
+
 	@GetMapping("/book")
-	public ResponseEntity readBooks(@RequestParam(required = false) String isbn) {
-		if (isbn == null) {
-			return ResponseEntity.ok(libraryService.findAllBooks());
-		}
-		System.out.println("libraryService = " + libraryService.findAllBooks());
+	public ResponseEntity<Book> searchBookByIsbn(@RequestParam(required = false) String isbn) {
 		return ResponseEntity.ok(libraryService.findBookByIsbn(isbn));
 	}
 
 	@GetMapping("/book/{bookId}")
-	public ResponseEntity<Book> readBook(@PathVariable Long bookId) {
+	public ResponseEntity<Book> searchBookById(@PathVariable Long bookId) {
 		return ResponseEntity.ok(libraryService.findBookById(bookId));
 	}
 
@@ -58,8 +59,8 @@ public class LibraryController {
 	}
 
 	@PostMapping("/author")
-	public ResponseEntity<Author> createAuthor(@RequestBody AuthorCreationRequest authorCreationRequest) {
-		Author author = libraryService.createAuthor(authorCreationRequest);
+	public ResponseEntity<Author> createAuthor(@RequestBody AuthorCreationRequest request) {
+		Author author = libraryService.createAuthor(request);
 		System.out.println(author.toString());
 		return ResponseEntity.ok(author);
 	}
@@ -69,20 +70,30 @@ public class LibraryController {
 		return ResponseEntity.ok(libraryService.createMember(request));
 	}
 
-	@PatchMapping("/member/{memberId}")
+	@GetMapping("/member/{memberId}")
+	public ResponseEntity<Member> searchMember(@PathVariable Long memberId) {
+		return ResponseEntity.ok(libraryService.searchMember(memberId));
+	}
+
+	@GetMapping("/member/all")
+	public ResponseEntity<List<Member>> searchAllMembers() {
+		return ResponseEntity.ok(libraryService.searchAllMembers());
+	}
+
+	@PatchMapping("/member/update/{memberId}")
 	public ResponseEntity<Member> updateMember(@RequestBody MemberCreationRequest request,
 		@PathVariable Long memberId) {
 		return ResponseEntity.ok(libraryService.updateMember(memberId, request));
 	}
 
-	@DeleteMapping("member/{memberId}")
+	@DeleteMapping("member/delete/{memberId}")
 	public ResponseEntity<Void> deleteMember(@PathVariable Long memberId) {
 		libraryService.deleteMemberById(memberId);
 		return ResponseEntity.ok().build();
 	}
 
 	@PostMapping("/book/lend")
-	public ResponseEntity<List<String>> lendBook(@RequestBody BookLendRequest bookLendRequest) {
-		return ResponseEntity.ok(libraryService.lendBook(bookLendRequest));
+	public ResponseEntity<List<String>> lendBook(@RequestBody BookLendRequest request) {
+		return ResponseEntity.ok(libraryService.lendBook(request));
 	}
 }

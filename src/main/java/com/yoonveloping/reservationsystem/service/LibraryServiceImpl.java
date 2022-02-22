@@ -26,9 +26,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class LibraryServiceImpl implements LibraryService {
 
-	public static final String BOOK_NOT_FOUND_BY_ID_MESSAGE = "Cannot find any book under given ID!";
-	public static final String BOOK_NOT_FOUND_BY_ISBN_MESSAGE = "Cannot find any book under given ISBN!";
+	private static final String BOOK_NOT_FOUND_BY_ID_MESSAGE = "Cannot find any book under given ID!";
+	private static final String BOOK_NOT_FOUND_BY_ISBN_MESSAGE = "Cannot find any book under given ISBN!";
 	private static final String AUTHOR_NOT_FOUND_MESSAGE = "Cannot find any author!";
+	private static final String MEMBER_NOT_FOUND_BY_ID_MESSAGE = "Cannot find any member under given ID!";
 	private static final String MEMBER_NOT_FOUND_MESSAGE = "Cannot find the member in the database!";
 	private static final String MEMBER_NOT_ACTIVE_ERROR_MESSAGE = "Member is not active to proceed a lending!";
 	private static final int EXPIRATION_DAYS = 30;
@@ -94,6 +95,20 @@ public class LibraryServiceImpl implements LibraryService {
 		BeanUtils.copyProperties(request, member);
 		member.setStatus(MemberStatus.ACTIVE);
 		return memberRepository.save(member);
+	}
+
+	@Override
+	public Member searchMember(Long id) {
+		Optional<Member> member = memberRepository.findById(id);
+		if (member.isPresent()) {
+			return member.get();
+		}
+		throw new EntityNotFoundException(MEMBER_NOT_FOUND_BY_ID_MESSAGE);
+	}
+
+	@Override
+	public List<Member> searchAllMembers() {
+		return memberRepository.findAll();
 	}
 
 	@Override

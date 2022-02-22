@@ -25,6 +25,10 @@ public interface LibraryService {
 
 	Member createMember(MemberCreationRequest request);
 
+	Member searchMember(Long id);
+
+	List<Member> searchAllMembers();
+
 	Member updateMember(Long id, MemberCreationRequest request);
 
 	void deleteMemberById(Long id);
