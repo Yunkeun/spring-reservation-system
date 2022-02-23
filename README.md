@@ -51,3 +51,5 @@ spring boot CRUD REST API example with JPA, MySQL, Gradle
     - 저자를 생성한다.
   - 대출
     - 도서를 대출한다.
+    - id로 대출 정보를 조회한다.
+    - 저장된 모든 대출 정보를 조회한다.
