@@ -40,6 +40,20 @@ public class LendServiceImpl implements LendService {
 		return approveBooksToBurrow(request);
 	}
 
+	@Override
+	public List<Lend> findAllLends() {
+		return lendRepository.findAll();
+	}
+
+	@Override
+	public Lend findLendById(Long id) {
+		final Optional<Lend> lend = lendRepository.findById(id);
+		if (lend.isPresent()) {
+			return lend.get();
+		}
+		throw new EntityNotFoundException(LEND_NOT_FOUND_BY_ID_MESSAGE);
+	}
+
 	private List<String> approveBooksToBurrow(BookLendRequest request) {
 		final List<String> booksApprovedToBurrow = new ArrayList<>();
 		request.getBookIds().forEach(bookId

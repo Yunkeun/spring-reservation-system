@@ -7,4 +7,8 @@ import java.util.List;
 public interface LendService {
 
 	List<String> lendBook(BookLendRequest request);
+
+	List<Lend> findAllLends();
+
+	Lend findLendById(Long id);
 }
